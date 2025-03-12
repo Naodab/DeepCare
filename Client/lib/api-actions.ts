@@ -1,25 +1,30 @@
 // This file contains mock API functions that would normally call a backend service
 // In a real application, these would make fetch requests to your API endpoints
 
+import API_BASE_URL from "./api-config"
+import { logoutUser } from "./auth-actions"
+import getAccessToken from "./tokens"
+
 export async function analyzeBrainMRI(file: File) {
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 2000))
+  let accessToken = await getAccessToken()
+  if (!accessToken) {
+    await logoutUser()
+    return
+  }
 
-  // Mock response - in a real app, this would come from your AI model
-  // This is just for demonstration purposes
-  const mockResponses = [
-    {
-      prediction: "Tumor Detected",
-      confidence: 0.89,
-    },
-    {
-      prediction: "No Tumor Detected",
-      confidence: 0.95,
-    },
-  ]
+  const formData = new FormData();
+  formData.append("image", file);
 
-  // Randomly select one of the mock responses
-  return mockResponses[Math.floor(Math.random() * mockResponses.length)]
+  const response = await fetch(`${API_BASE_URL}/api/brain-tumor/`, {
+    method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      },
+      body: formData,
+  })
+  const result = await response.json()
+
+  return result
 }
 
 // Update the analyzeMedicalSymptoms function to return the expanded format

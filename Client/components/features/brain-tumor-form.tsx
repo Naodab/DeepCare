@@ -17,7 +17,7 @@ export function BrainTumorForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<{
     prediction: string
-    confidence: number
+    confidence: string
   } | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,10 +81,17 @@ export function BrainTumorForm() {
     setIsLoading(true)
 
     try {
-      // In a real app, this would call an API endpoint
       const result = await analyzeBrainMRI(file)
 
-      setResult(result)
+      if (result) {
+        setResult(result)
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Analysis failed",
+          description: "There was an error analyzing the image. Please try again.",
+        })
+      }
 
       toast({
         title: "Analysis complete",
@@ -178,7 +185,7 @@ export function BrainTumorForm() {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Confidence:</span>
-                  <span>{(result.confidence * 100).toFixed(2)}%</span>
+                  <span>{result.confidence}</span>
                 </div>
                 <div className="mt-4 text-sm text-muted-foreground">
                   <p className="font-medium">Note:</p>
