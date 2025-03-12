@@ -20,36 +20,43 @@ export async function loginUser(data: {
 
   try {
     // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const response = await fetch("http://localhost:8000/api/token/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-    // For demo purposes, accept any valid email format with password length >= 8
-    if (data.email && data.password.length >= 8) {
-      // Set a session cookie
-      const cookieStore = await cookies()
-      cookieStore.set(
-        "session",
-        JSON.stringify({
-          user: {
-            id: "user_123",
-            name: data.email.split("@")[0],
-            email: data.email,
-          },
-        }),
-        {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 60 * 60 * 24 * 7, // 1 week
-          path: "/",
+    if (!response.ok) {
+      const errorData = await response.json();
+      return {
+        success: false,
+        error: errorData.error || "Invalid email or password",
+      };
+    }
+    
+    const result = await response.json();
+
+    const cookieStore = await cookies();
+    cookieStore.set(
+      "session",
+      JSON.stringify({
+        user: {
+          id: result.user.id,
+          name: result.user.name,
+          email: result.user.email,
         },
-      )
+      }),
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      }
+    );
 
-      return { success: true }
-    }
-
-    return {
-      success: false,
-      error: "Invalid email or password",
-    }
+    return { success: true }
   } catch (error) {
     return {
       success: false,
