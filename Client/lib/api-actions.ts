@@ -27,25 +27,26 @@ export async function analyzeBrainMRI(file: File) {
   return result
 }
 
-// Update the analyzeMedicalSymptoms function to return the expanded format
 export async function analyzeMedicalSymptoms(symptoms: string) {
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-
-  // Mock response in the specified format with additional fields
-  return {
-    disease: "Common Cold",
-    description:
-      "The common cold is a viral infection of your nose and throat (upper respiratory tract). It's usually harmless, although it might not feel that way. Many types of viruses can cause a common cold.",
-    precaution:
-      "Rest, stay hydrated, and avoid close contact with others to prevent spreading the virus. Wash hands frequently and use tissues when sneezing or coughing.",
-    medications:
-      "Over-the-counter pain relievers like acetaminophen or ibuprofen can help with symptoms. Decongestants, antihistamines, and cough suppressants may also provide relief.",
-    workouts:
-      "Light activity like walking is fine if you feel up to it, but avoid strenuous exercise until symptoms improve. Listen to your body and rest when needed.",
-    diets:
-      "Stay hydrated with water, tea, and clear broths. Consume vitamin C-rich foods like citrus fruits. Chicken soup and warm liquids can help soothe a sore throat.",
+  let accessToken = await getAccessToken()
+  if (!accessToken) {
+    await logoutUser()
+    return
   }
+
+  const formData = new FormData();
+  formData.append("symptoms", symptoms);
+
+  const response = await fetch(`${API_BASE_URL}/api/disease-prediction/`, {
+    method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      },
+      body: formData,
+  })
+  const result = await response.json()
+
+  return result
 }
 
 export async function analyzeSkinLesion(file: File) {
