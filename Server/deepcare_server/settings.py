@@ -27,7 +27,11 @@ SECRET_KEY = config('SECRET_KEY') or 'django-insecure-f8l*n6+bca_4)3(^cje=lhp(f!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="*").split(",")
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="http://localhost:3000").split(",")
+CORS_ALLOW_CREDENTIALS = False
 
 
 # Application definition
@@ -158,6 +162,3 @@ AUTHENTICATION_BACKENDS = [
     'deepcare_server.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
