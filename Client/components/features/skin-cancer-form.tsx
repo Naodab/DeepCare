@@ -16,10 +16,8 @@ export function SkinCancerForm() {
   const [preview, setPreview] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<{
-    classification: string
+    prediction: string
     confidence: number
-    riskLevel: string
-    recommendations: string[]
   } | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,43 +172,20 @@ export function SkinCancerForm() {
               <h3 className="text-lg font-medium">Analysis Results</h3>
               <div className="grid gap-2">
                 <div className="flex justify-between">
-                  <span className="font-medium">Classification:</span>
+                  <span className="font-medium">Prediction:</span>
                   <span
                     className={
-                      result.classification.includes("Malignant")
+                      result.prediction.includes("Malignant")
                         ? "text-red-500 font-bold"
                         : "text-green-500 font-bold"
                     }
                   >
-                    {result.classification}
+                    {result.prediction}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Confidence:</span>
                   <span>{(result.confidence * 100).toFixed(2)}%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium">Risk Level:</span>
-                  <span
-                    className={
-                      result.riskLevel === "High"
-                        ? "text-red-500 font-bold"
-                        : result.riskLevel === "Medium"
-                          ? "text-yellow-500 font-bold"
-                          : "text-green-500 font-bold"
-                    }
-                  >
-                    {result.riskLevel}
-                  </span>
-                </div>
-
-                <div className="mt-4 space-y-2">
-                  <h4 className="font-medium">Recommendations:</h4>
-                  <ul className="list-disc pl-5 space-y-1">
-                    {result.recommendations.map((recommendation, index) => (
-                      <li key={index}>{recommendation}</li>
-                    ))}
-                  </ul>
                 </div>
 
                 <div className="mt-4 text-sm text-muted-foreground">

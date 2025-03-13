@@ -50,36 +50,26 @@ export async function analyzeMedicalSymptoms(symptoms: string) {
 }
 
 export async function analyzeSkinLesion(file: File) {
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 2000))
+  let accessToken = await getAccessToken()
+  if (!accessToken) {
+    await logoutUser()
+    return
+  }
 
-  // Mock response - in a real app, this would come from your AI model
-  // This is just for demonstration purposes
-  const mockResponses = [
-    {
-      classification: "Benign (Non-cancerous)",
-      confidence: 0.92,
-      riskLevel: "Low",
-      recommendations: [
-        "Monitor for any changes in size, shape, or color",
-        "Use sunscreen and protective clothing when outdoors",
-        "Regular skin self-examinations",
-      ],
-    },
-    {
-      classification: "Potentially Malignant",
-      confidence: 0.78,
-      riskLevel: "Medium",
-      recommendations: [
-        "Consult with a dermatologist as soon as possible",
-        "Avoid sun exposure to the affected area",
-        "Do not scratch or irritate the lesion",
-      ],
-    },
-  ]
+  const formData = new FormData();
+  formData.append("image", file);
 
-  // Randomly select one of the mock responses
-  return mockResponses[Math.floor(Math.random() * mockResponses.length)]
+  const response = await fetch(`${API_BASE_URL}/api/skin-cancer/`, {
+    method: "POST",
+    headers: {
+        "Authorization": `Bearer ${accessToken}`
+    },
+    body: formData
+  })
+  const result = await response.json()
+  console.log(result)
+
+  return result
 }
 
 // Add function to get user history
