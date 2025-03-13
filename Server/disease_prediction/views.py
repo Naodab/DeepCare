@@ -41,9 +41,9 @@ class DiseasePredictionView(APIView):
                     'disease': predicted_disease,
                     'description': desc,
                     'precaution': pre,
-                    'medication': med,
-                    'diet': die,
-                    'workout': wor
+                    'medications': med,
+                    'diets': die,
+                    'workouts': wor
                 }
 
                 SearchHistory.objects.create(
@@ -66,9 +66,9 @@ class DiseasePredictionView(APIView):
         pre = pre.values.flatten().tolist() if not pre.empty else []
         if pre:
             if len(pre) > 1:
-                pre_text = f"You should {', '.join(pre[:-1])} and {pre[-1]}"
+                pre_text = f"You should {', '.join(pre[:-1])} and {pre[-1]}."
             else:
-                pre_text = f"You should {pre[0]}"
+                pre_text = f"You should {pre[0]}."
         else:
             pre_text = "No precautions available."
         pre = pre_text
@@ -107,11 +107,12 @@ class DiseasePredictionView(APIView):
         else:
             wor_text = "There are no specific workout recommendations for this condition."
         wor = wor_text
-        
+
         return desc, pre, med, die, wor
     
     def get_predicted_value(self, patient_symptoms):
         input_vector = np.zeros(len(symptoms_dict))
         for item in patient_symptoms:
-            input_vector[symptoms_dict[item]] = 1
+            if item in symptoms_dict:
+                input_vector[symptoms_dict[item]] = 1
         return model.predict([input_vector])[0]
