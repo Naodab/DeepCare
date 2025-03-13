@@ -36,7 +36,7 @@ class SkinCancerDetectionView(APIView):
                     user=request.user,
                     function_type="skin_cancer_detection",
                     query="Image submitted",
-                    result={"cancer": result_value}
+                    result=result_value
                 )
                 return Response({"prediction": result_value, "confidence": confidence}, status=status.HTTP_200_OK)
             except Exception as e:
