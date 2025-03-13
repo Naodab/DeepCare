@@ -12,8 +12,8 @@ import { Badge } from "@/components/ui/badge"
 
 type HistoryItem = {
   id: string
-  type: string
-  date: string
+  function_type: string
+  created_at: string
   result: string
 }
 
@@ -44,11 +44,11 @@ export function UserHistory() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "brain-tumor":
+      case "brain_tumor_detection":
         return <Brain className="h-5 w-5" />
-      case "medical-prediction":
+      case "disease_prediction":
         return <HeartPulse className="h-5 w-5" />
-      case "skin-cancer":
+      case "skin_cancer_detection":
         return <Microscope className="h-5 w-5" />
       default:
         return null
@@ -57,11 +57,11 @@ export function UserHistory() {
 
   const getTypeName = (type: string) => {
     switch (type) {
-      case "brain-tumor":
+      case "brain_tumor_detection":
         return "Brain Tumor Detection"
-      case "medical-prediction":
+      case "disease_prediction":
         return "Medical Prediction"
-      case "skin-cancer":
+      case "skin_cancer_detection":
         return "Skin Cancer Detection"
       default:
         return type
@@ -101,20 +101,23 @@ export function UserHistory() {
             <div className="space-y-4">
               {historyData.map((item) => (
                 <div key={item.id} className="flex items-start p-4 border rounded-lg">
-                  <div className="mr-4 mt-1 bg-primary/10 p-2 rounded-full">{getTypeIcon(item.type)}</div>
+                  <div className="mr-4 mt-1 bg-primary/10 p-2 rounded-full">{getTypeIcon(item.function_type)}</div>
                   <div className="flex-1">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2">
-                      <h3 className="font-medium">{getTypeName(item.type)}</h3>
-                      <span className="text-sm text-muted-foreground">{formatDate(item.date)}</span>
+                      <h3 className="font-medium">{getTypeName(item.function_type)}</h3>
+                      <span className="text-sm text-muted-foreground">{formatDate(item.created_at)}</span>
                     </div>
                     <div className="flex items-center">
                       <span className="text-sm mr-2">Result:</span>
                       <Badge
                         variant={
-                          item.result.includes("No Tumor") || item.result.includes("Benign") ? "outline" : "destructive"
+                          typeof item.result === "string" &&
+                          (item.result.includes("No Tumor") || item.result.includes("Benign"))
+                            ? "outline"
+                            : "destructive"
                         }
                       >
-                        {item.result}
+                        {String(item.result ?? "Unknown")}
                       </Badge>
                     </div>
                   </div>
