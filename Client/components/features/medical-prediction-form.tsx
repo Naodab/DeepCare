@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { analyzeMedicalSymptoms } from "@/lib/api-actions"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import getAccessToken from "@/lib/tokens"
 
 export function MedicalPredictionForm() {
   const { toast } = useToast()
@@ -57,6 +58,8 @@ export function MedicalPredictionForm() {
     } finally {
       setIsLoading(false)
     }
+    let access_token = await getAccessToken()
+    console.log(access_token)
   }
 
   return (

@@ -2,9 +2,7 @@
 
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-
-// This would be replaced with your actual authentication logic
-// For example, connecting to a database or auth service
+import API_BASE_URL from "./api-config"
 
 type AuthResult = {
   success: boolean
@@ -15,12 +13,9 @@ export async function loginUser(data: {
   email: string
   password: string
 }): Promise<AuthResult> {
-  // This is a mock implementation
-  // In a real app, you would validate credentials against a database
 
   try {
-    // Simulate API call delay
-    const response = await fetch("http://localhost:8000/api/token/", {
+    const response = await fetch(`${API_BASE_URL}/api/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,6 +50,28 @@ export async function loginUser(data: {
         path: "/",
       }
     );
+
+    cookieStore.set(
+      "access_token",
+      result.access,
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60,
+        path: "/"
+      }
+    )
+
+    cookieStore.set(
+      "refresh_token",
+      result.access,
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24,
+        path: "/"
+      }
+    )
 
     return { success: true }
   } catch (error) {
