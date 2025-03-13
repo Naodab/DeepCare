@@ -74,42 +74,21 @@ export async function analyzeSkinLesion(file: File) {
 
 // Add function to get user history
 export async function getUserHistory() {
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  let accessToken = await getAccessToken()
+  if (!accessToken) {
+    await logoutUser()
+    return
+  }
 
-  // Mock history data
-  return [
-    {
-      id: "hist_1",
-      type: "brain-tumor",
-      date: "2023-06-15T10:30:00Z",
-      result: "No Tumor Detected (95% confidence)",
-    },
-    {
-      id: "hist_2",
-      type: "medical-prediction",
-      date: "2023-06-10T14:45:00Z",
-      result: "Common Cold",
-    },
-    {
-      id: "hist_3",
-      type: "skin-cancer",
-      date: "2023-05-28T09:15:00Z",
-      result: "Benign (92% confidence)",
-    },
-    {
-      id: "hist_4",
-      type: "medical-prediction",
-      date: "2023-05-20T16:30:00Z",
-      result: "Seasonal Allergies",
-    },
-    {
-      id: "hist_5",
-      type: "brain-tumor",
-      date: "2023-05-05T11:20:00Z",
-      result: "Tumor Detected (89% confidence)",
-    },
-  ]
+  const response = await fetch(`${API_BASE_URL}/api/users/history`, {
+    method: "GET",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+  })
+  const result = await response.json()
+
+  return result
 }
 
 export async function getUserProfile() {

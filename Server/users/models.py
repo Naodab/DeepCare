@@ -10,7 +10,8 @@ class SearchHistory(models.Model):
     user = models.ForeignKey(User, related_name='search_histories', on_delete=models.CASCADE)
     function_type = models.CharField(max_length=50, choices=FUNCTION_CHOICES)
     query = models.CharField(max_length=255, blank=True, null=True)
-    result = models.JSONField(blank=True, null=True)
+    # result = models.JSONField(blank=True, null=True)
+    result = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

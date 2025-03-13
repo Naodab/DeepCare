@@ -48,7 +48,7 @@ class DiseasePredictionView(APIView):
                     user = request.user,
                     function_type="disease_prediction",
                     query=f"Symptoms: {symptoms}",
-                    result=result_data
+                    result=predicted_disease
                 )
 
                 return Response(result_data, status=status.HTTP_200_OK)

@@ -41,7 +41,7 @@ class BrainTumorDetectionView(APIView):
                     user=request.user,
                     function_type="brain_tumor_detection",
                     query="Image submitted",
-                    result={"tumor": result_value}
+                    result=result_value
                 )
 
                 return Response({"prediction": result_value, "confidence": confidence}, status=status.HTTP_200_OK)
