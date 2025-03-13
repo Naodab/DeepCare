@@ -14,6 +14,17 @@ import { Separator } from "@/components/ui/separator"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const formSchema = z.object({
+  username: z
+    .string()
+    .min(3, {
+      message: "Username must be at least 3 characters.",
+    })
+    .max(20, {
+      message: "Username must not exceed 20 characters.",
+    })
+    .regex(/^[a-zA-Z0-9_]+$/, {
+      message: "Username can only contain letters, numbers, and underscores.",
+    }),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
@@ -52,6 +63,7 @@ export function SignUpForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      username: "",
       name: "",
       email: "",
       password: "",
@@ -115,6 +127,25 @@ export function SignUpForm() {
     <div className="grid gap-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Account Information</h3>
+            <div className="grid grid-cols-1 gap-4">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="johndoe123" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Personal Information</h3>
             <div className="grid grid-cols-1 gap-4">
