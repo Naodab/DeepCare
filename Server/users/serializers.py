@@ -2,16 +2,19 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import SearchHistory, Profile
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email']
-
 class ProfileSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+
     class Meta:
         model = Profile
         fields = ['full_name', 'phone', 'date_of_birth', 'gender', 'blood_type', 
-                'allergies', 'medical_conditions', 'emergency_contact']
+                'allergies', 'medical_conditions', 'emergency_contact', 'created_at']
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'profile']
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
