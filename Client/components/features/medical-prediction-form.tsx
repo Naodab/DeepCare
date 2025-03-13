@@ -43,6 +43,7 @@ export function MedicalPredictionForm() {
       const result = await analyzeMedicalSymptoms(symptoms)
 
       setResult(result)
+      console.log(result)
 
       toast({
         title: "Analysis complete",

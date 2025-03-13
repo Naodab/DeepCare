@@ -27,6 +27,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/users/', include('users.urls')),
     path('api/brain-tumor/', include('brain_tumor_detection.urls')),
-    # path('api/prediction/', include('disease_prediction.urls')),
+    path('api/disease-prediction/', include('disease_prediction.urls')),
     # path('api/skin-cancer/', include('skin_cancer_detection.urls')),
 ]
