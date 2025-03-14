@@ -10,7 +10,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 class BrainTumorDetectionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'brain_tumor_detection'
-    print(BASE_DIR)
 
     brain_tumor_model = None
 

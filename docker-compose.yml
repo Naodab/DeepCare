@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./Server
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./Server:/app
+    restart: always
+
+  frontend:
+    build: ./Client
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./Client:/app
+    depends_on:
+      - backend
+    restart: always

@@ -83,6 +83,7 @@ export async function loginUser(data: {
 }
 
 export async function registerUser(data: {
+  username: string
   name: string
   email: string
   password: string
@@ -94,28 +95,41 @@ export async function registerUser(data: {
   medicalConditions?: string
   emergencyContact?: string
 }): Promise<AuthResult> {
-  // This is a mock implementation
-  // In a real app, you would store user data in a database
-
   try {
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const formattedData = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      profile: {
+        full_name: data.name,
+        phone: data.phone,
+        date_of_birth: data.dateOfBirth,
+        gender: data.gender,
+        blood_type: data.bloodType,
+        allergies: data.allergies,
+        medical_conditions: data.medicalConditions,
+        emergency_contact: data.emergencyContact,
+      },
+    }
+    console.log(formattedData)
 
-    // For demo purposes, accept any valid input
-    if (data.name && data.email && data.password.length >= 8) {
-      // In a real app, you would:
-      // 1. Check if user already exists
-      // 2. Hash the password
-      // 3. Store in database
-      // 4. Send verification email
+    const response = await fetch(`${API_BASE_URL}/api/users/register/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formattedData)
+    })
 
-      return { success: true }
+    if (!response.ok) {
+      const errorData = await response.json()
+      return {
+        success: false,
+        error: errorData.error || "Invalid registration data"
+      }
     }
 
-    return {
-      success: false,
-      error: "Invalid registration data",
-    }
+    return { success: true }
   } catch (error) {
     return {
       success: false,

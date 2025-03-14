@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from django.apps import apps

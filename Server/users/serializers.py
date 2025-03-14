@@ -1,25 +1,42 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import SearchHistory
+from .models import SearchHistory, Profile
+
+class ProfileSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ['full_name', 'phone', 'date_of_birth', 'gender', 'blood_type', 
+                'allergies', 'medical_conditions', 'emergency_contact', 'created_at']
 
 class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 'email', 'profile']
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
+    profile = ProfileSerializer()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
+        fields = ['id', 'username', 'email', 'password', 'profile']
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email đã được sử dụng. Vui lòng chọn email khác.")
+        return value
 
     def create(self, validated_data):
+        profile_data = validated_data.pop('profile')
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email'),
             password=validated_data['password']
         )
+        Profile.objects.create(user=user, **profile_data)
         return user
 
 class SearchHistorySerializer(serializers.ModelSerializer):
