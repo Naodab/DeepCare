@@ -6,10 +6,13 @@ from .serializers import DiseasePredictionSerializer
 from users.models import SearchHistory
 import numpy as np
 import ast
-
+import torch
 
 app_config = apps.get_app_config("disease_prediction")
 model = app_config.model
+model_transformer = app_config.model_transformer
+tokenizer = app_config.tokenizer
+label_encoder = app_config.label_encoder
 precautions = app_config.precautions
 workouts = app_config.workouts
 description = app_config.description
@@ -23,6 +26,8 @@ class DiseasePredictionView(APIView):
 
     def post(self, request):
         symptoms = request.data.get("symptoms", "")
+        symptoms = self.predict_symptom(symptoms, model_transformer, tokenizer, label_encoder)
+        print(symptoms)
         serializer = DiseasePredictionSerializer(data={"symptoms": symptoms})
         if serializer.is_valid():
             if isinstance(symptoms, str):
@@ -114,3 +119,12 @@ class DiseasePredictionView(APIView):
             if item in symptoms_dict:
                 input_vector[symptoms_dict[item]] = 1
         return model.predict([input_vector])[0]
+    
+    def predict_symptom(self, sentence, model, tokenizer, label_encoder):
+        inputs = tokenizer(sentence, padding="max_length", truncation=True, return_tensors="pt")
+        with torch.no_grad():
+            outputs = model(**inputs)
+            logits = outputs.logits
+        predicted_class_idx = torch.argmax(logits, dim=1).item()
+        predicted_symptom = label_encoder.inverse_transform([predicted_class_idx])[0]
+        return predicted_symptom
