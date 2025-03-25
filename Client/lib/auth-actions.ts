@@ -15,6 +15,7 @@ export async function loginUser(data: {
 }): Promise<AuthResult> {
 
   try {
+    console.log(API_BASE_URL)
     const response = await fetch(`${API_BASE_URL}/api/token/`, {
       method: "POST",
       headers: {
