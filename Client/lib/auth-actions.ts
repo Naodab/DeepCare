@@ -13,8 +13,9 @@ export async function loginUser(data: {
   email: string
   password: string
 }): Promise<AuthResult> {
-
+  console.log(data)
   try {
+    console.log(API_BASE_URL)
     const response = await fetch(`${API_BASE_URL}/api/token/`, {
       method: "POST",
       headers: {
@@ -30,8 +31,9 @@ export async function loginUser(data: {
         error: errorData.error || "Invalid email or password",
       };
     }
-    
+    console.log(response)
     const result = await response.json();
+    console.log(result)
 
     const cookieStore = await cookies();
     cookieStore.set(
@@ -75,6 +77,7 @@ export async function loginUser(data: {
 
     return { success: true }
   } catch (error) {
+    console.log(error)
     return {
       success: false,
       error: "An unexpected error occurred",
