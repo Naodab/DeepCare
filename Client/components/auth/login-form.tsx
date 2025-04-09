@@ -65,22 +65,6 @@ export function LoginForm() {
     }
   }
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true)
-
-    try {
-      // This would be implemented with your OAuth provider
-      router.push("/api/auth/google")
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Something went wrong",
-        description: "Please try again later.",
-      })
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div className="grid gap-6">
       <Form {...form}>
@@ -116,33 +100,7 @@ export function LoginForm() {
           </Button>
         </form>
       </Form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <Separator className="w-full" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-        </div>
-      </div>
-      <Button variant="outline" type="button" disabled={isLoading} onClick={handleGoogleLogin} className="w-full">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="mr-2 h-4 w-4"
-        >
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="M8 12h8"></path>
-          <path d="M12 8v8"></path>
-        </svg>
-        Google
-      </Button>
+
     </div>
   )
 }
